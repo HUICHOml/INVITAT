@@ -101,24 +101,29 @@
         
         // Confirmar asistencia y actualizar Google Sheets
         document.getElementById("confirmar").addEventListener("click", function() {
-            let seleccion = document.getElementById("opciones").value;
-            if (!seleccion) return;
+    let seleccion = document.getElementById("opciones").value;
 
-            fetch("https://script.google.com/macros/s/AKfycbz9F2pf14gQIO5fz2aBu87y1yizSiRlcZFQTUqQOuJymP6eiv0sK4ZLolX0G1FJZSJ7Kg/exec", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: seleccion, boletos: invitados[seleccion] })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert("Asistencia confirmada con éxito!");
-                } else {
-                    alert("Error al confirmar asistencia: " + data.message);
-                }
-            })
-            .catch(error => alert("Error al conectar con el servidor"));
-        });
+    if (!seleccion) {
+        alert("Por favor, selecciona tu nombre.");
+        return;
+    }
+
+    fetch("https://script.google.com/macros/s/AKfycbz9F2pf14gQIO5fz2aBu87y1yizSiRlcZFQTUqQOuJymP6eiv0sK4ZLolX0G1FJZSJ7Kg/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre: seleccion })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Asistencia confirmada correctamente.");
+        } else {
+            alert("Error al confirmar asistencia: " + data.message);
+        }
+    })
+    .catch(error => console.error("Error al confirmar asistencia:", error));
+});
+
     </script>
 
 </body>
