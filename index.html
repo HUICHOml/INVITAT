@@ -62,7 +62,7 @@
 
         // Cargar los nombres desde Google Sheets
         document.addEventListener("DOMContentLoaded", function() {
-            fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbw0meNhB5G0hPRzTqQ4W26j4u9e65kHfjy0cEYFEvWCdVasVsvYg_W9rPhmm4wf9QvV5A/exec")
+            fetch("https://script.google.com/macros/s/AKfycbyPq95kNfpfsAEm5eih5mQhaKJ9ffdXd6VZYenZXo5R9JgFdzeDvFRJTnifwLZyijPeVQ/exec")
                 .then(response => response.json())
                 .then(data => {
                     const opcionesSelect = document.getElementById("opciones");
@@ -100,7 +100,7 @@
             let seleccion = document.getElementById("opciones").value;
             if (!seleccion) return;
 
-            fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbw0meNhB5G0hPRzTqQ4W26j4u9e65kHfjy0cEYFEvWCdVasVsvYg_W9rPhmm4wf9QvV5A/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbyPq95kNfpfsAEm5eih5mQhaKJ9ffdXd6VZYenZXo5R9JgFdzeDvFRJTnifwLZyijPeVQ/exec", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombre: seleccion, boletos: invitados[seleccion] })
