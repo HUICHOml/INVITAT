@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -45,7 +46,7 @@
     </style>
 </head>
 <body>
-    
+
     <div class="container">
         <h2>Confirmar Asistencia</h2>
         <label for="opciones">Elige tu nombre:</label>
@@ -56,44 +57,65 @@
         <button id="confirmar" disabled>Confirmar Asistencia</button>
     </div>
     
-<script>
-    let invitados = {};
+    <script>
+        let invitados = {};
 
-    function cargarInvitadosDesdeSheets() {
-        fetch("https://script.google.com/macros/s/AKfycbyg9rtjiaOB1JhKNkLqxQu6s1Sf-DftdrrXFByaV2ChCnrK8xjkLlqU_0iJw0QzExC-1A/exec")
+        // Cargar los nombres desde Google Sheets
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbw0meNhB5G0hPRzTqQ4W26j4u9e65kHfjy0cEYFEvWCdVasVsvYg_W9rPhmm4wf9QvV5A/exec")
+                .then(response => response.json())
+                .then(data => {
+                    const opcionesSelect = document.getElementById("opciones");
+                    opcionesSelect.innerHTML = '<option value="">--Elige tu nombre--</option>';
+                    
+                    data.forEach(invitado => {
+                        invitados[invitado.nombre] = invitado.boletos;
+
+                        const optionElement = document.createElement("option");
+                        optionElement.value = invitado.nombre;
+                        optionElement.textContent = invitado.nombre;
+                        opcionesSelect.appendChild(optionElement);
+                    });
+                })
+                .catch(error => console.error("Error al obtener los datos:", error));
+        });
+
+        // Mostrar boletos asignados al seleccionar un nombre
+        document.getElementById("opciones").addEventListener("change", function() {
+            let seleccion = this.value;
+            let boletosTexto = document.getElementById("boletos");
+            let botonConfirmar = document.getElementById("confirmar");
+            
+            if (invitados[seleccion]) {
+                boletosTexto.textContent = `Número de boletos asignados: ${invitados[seleccion]}`;
+                botonConfirmar.disabled = false;
+            } else {
+                boletosTexto.textContent = "";
+                botonConfirmar.disabled = true;
+            }
+        });
+        
+        // Confirmar asistencia y actualizar Google Sheets
+        document.getElementById("confirmar").addEventListener("click", function() {
+            let seleccion = document.getElementById("opciones").value;
+            if (!seleccion) return;
+
+            fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbw0meNhB5G0hPRzTqQ4W26j4u9e65kHfjy0cEYFEvWCdVasVsvYg_W9rPhmm4wf9QvV5A/exec", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre: seleccion, boletos: invitados[seleccion] })
+            })
             .then(response => response.json())
             .then(data => {
-                const opcionesSelect = document.getElementById("opciones");
-                opcionesSelect.innerHTML = '<option value="">--Elige tu nombre--</option>';
-
-                data.forEach(invitado => {
-                    invitados[invitado.nombre] = invitado.boletos;
-                    const optionElement = document.createElement("option");
-                    optionElement.value = invitado.nombre;
-                    optionElement.textContent = invitado.nombre;
-                    opcionesSelect.appendChild(optionElement);
-                });
+                if (data.status === "success") {
+                    alert("Asistencia confirmada con éxito!");
+                } else {
+                    alert("Error al confirmar asistencia: " + data.message);
+                }
             })
-            .catch(error => console.error("Error al cargar los invitados:", error));
-    }
+            .catch(error => alert("Error al conectar con el servidor"));
+        });
+    </script>
 
-    document.getElementById("opciones").addEventListener("change", function() {
-        let seleccion = this.value;
-        let boletosTexto = document.getElementById("boletos");
-        let botonConfirmar = document.getElementById("confirmar");
-
-        if (invitados[seleccion]) {
-            boletosTexto.textContent = `Número de boletos asignados: ${invitados[seleccion]}`;
-            botonConfirmar.disabled = false;
-        } else {
-            boletosTexto.textContent = "";
-            botonConfirmar.disabled = true;
-        }
-    });
-
-    // Llamar a la función para cargar invitados al abrir la página
-    cargarInvitadosDesdeSheets();
-</script>
-    
 </body>
 </html>
