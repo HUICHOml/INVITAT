@@ -62,7 +62,7 @@
 
         // Cargar los nombres desde Google Sheets
         function cargarInvitadosDesdeSheets() {
-            fetch("https://script.google.com/macros/s/AKfycbz9F2pf14gQIO5fz2aBu87y1yizSiRlcZFQTUqQOuJymP6eiv0sK4ZLolX0G1FJZSJ7Kg/exec")
+            fetch("https://script.google.com/macros/s/AKfycbwzBTnuvlLld7c-nmzzrRRtykumbwz_gMVff44_fJajahHHlgUwwUHtMoMXQcdME44ERA/exec")
                 .then(response => response.json())
                 .then(data => {
                     const opcionesSelect = document.getElementById("opciones");
@@ -108,7 +108,7 @@
         return;
     }
 
-    fetch("https://script.google.com/macros/s/AKfycbz9F2pf14gQIO5fz2aBu87y1yizSiRlcZFQTUqQOuJymP6eiv0sK4ZLolX0G1FJZSJ7Kg/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwzBTnuvlLld7c-nmzzrRRtykumbwz_gMVff44_fJajahHHlgUwwUHtMoMXQcdME44ERA/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre: seleccion })
