@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Invitación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        select, p, input, button {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        p {
+            font-weight: bold;
+            color: blue;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cargar Lista de Invitados</h2>
+        <input type="file" id="fileInput" accept=".csv">
+    </div>
+    
+    <div class="container">
+        <h2>Confirmar Asistencia</h2>
+        <label for="opciones">Elige tu nombre:</label>
+        <select id="opciones">
+            <option value="">--Elige tu nombre--</option>
+        </select>
+        <p id="boletos"></p>
+        <button id="confirmar" disabled>Confirmar Asistencia</button>
+    </div>
+    
+<script>
+    let invitados = {};
+
+    function cargarInvitadosDesdeSheets() {
+        fetch("https://script.google.com/macros/s/AKfycbw7UClNgYuIElp5o8ixymXnmp5EQmvJy_axB5TSR8FCXnuxQFa87HxbDGBEWINiUwEfeA/exec")
+            .then(response => response.json())
+            .then(data => {
+                const opcionesSelect = document.getElementById("opciones");
+                opcionesSelect.innerHTML = '<option value="">--Elige tu nombre--</option>';
+
+                data.forEach(invitado => {
+                    invitados[invitado.nombre] = invitado.boletos;
+                    const optionElement = document.createElement("option");
+                    optionElement.value = invitado.nombre;
+                    optionElement.textContent = invitado.nombre;
+                    opcionesSelect.appendChild(optionElement);
+                });
+            })
+            .catch(error => console.error("Error al cargar los invitados:", error));
+    }
+
+    document.getElementById("opciones").addEventListener("change", function() {
+        let seleccion = this.value;
+        let boletosTexto = document.getElementById("boletos");
+        let botonConfirmar = document.getElementById("confirmar");
+
+        if (invitados[seleccion]) {
+            boletosTexto.textContent = `Número de boletos asignados: ${invitados[seleccion]}`;
+            botonConfirmar.disabled = false;
+        } else {
+            boletosTexto.textContent = "";
+            botonConfirmar.disabled = true;
+        }
+    });
+
+    // Llamar a la función para cargar invitados al abrir la página
+    cargarInvitadosDesdeSheets();
+</script>
+    
+</body>
+</html>
